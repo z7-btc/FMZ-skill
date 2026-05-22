@@ -490,18 +490,18 @@ Log("[.] 等待数据...")
 
 ### 问题
 
-在主循环中多次调用 `exchange.GetPosition()` 时，如果只在循环开头查一次，然后执行交易操作（平仓/开仓），后面再使用之前的持仓快照就会数据过期，导致 `IndexError`：
+在主循环中多次调用 `exchange.GetPositions()` 时，如果只在循环开头查一次，然后执行交易操作（平仓/开仓），后面再使用之前的持仓快照就会数据过期，导致 `IndexError`：
 
 ```python
 # ❌ 错误示例
-pos = exchange.GetPosition()          # 第 1 次查询
+pos = exchange.GetPositions()          # 第 1 次查询
 hasPosition = pos is not None and len(pos) > 0
 
 # ... 平仓操作 ...
 exchange.SetDirection("closebuy")
 exchange.Buy(-1, abs(pos[0].Amount))  # 平仓后 pos 还是旧数据
 
-pos = exchange.GetPosition()          # 第 2 次查询，pos 被更新
+pos = exchange.GetPositions()          # 第 2 次查询，pos 被更新
 # 但 hasPosition 没更新！
 
 # ... 状态栏展示 ...
@@ -511,23 +511,23 @@ if hasPosition:                       # 使用的是过期的 hasPosition！
 
 ### 解决方案
 
-**每次需要使用持仓信息时重新查询，且同步更新 all 相关的状态变量**：
+**每次需要使用持仓信息时重新查询，且同步更新所有相关的状态变量**：
 
 ```python
 # ✅ 正确做法
 
 # 1. 交易前查询
-pos = exchange.GetPosition()
+pos = exchange.GetPositions()
 hasPosition = pos is not None and len(pos) > 0
 
 # ... 执行交易操作 ...
 
 # 2. 交易后重新查询（pos 和 hasPosition 成对更新）
-pos = exchange.GetPosition()
+pos = exchange.GetPositions()
 hasPosition = pos is not None and len(pos) > 0  # ← 同步更新！
 
 # 3. 状态栏展示时再次独立查询（用单独的变量名，避免混淆）
-currentPos = exchange.GetPosition()
+currentPos = exchange.GetPositions()
 currentHasPos = currentPos is not None and len(currentPos) > 0
 if currentHasPos:
     posType = "多头" if currentPos[0].Type == PD_LONG else "空头"

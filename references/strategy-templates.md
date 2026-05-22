@@ -42,7 +42,7 @@ function main() {
         var slowNow = slowMA[slowMA.length - 1]
         var cross = _Cross(fastMA, slowMA)
 
-        var pos = exchange.GetPosition()
+        var pos = exchange.GetPositions()
         // pos 为空表示无持仓；需要 SetContractType 后才能正常返回
 
         if (cross > 0 && cross <= 2) {  // 近期金叉
@@ -159,7 +159,7 @@ function main() {
         if (!ticker) { Sleep(5000); continue }
         var price = ticker.Last
 
-        var pos = exchange.GetPosition()
+        var pos = exchange.GetPositions()
         var hasPosition = pos && pos.length > 0
 
         if (!hasPosition && currentLayer == 0) {

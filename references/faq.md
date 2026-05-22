@@ -299,7 +299,7 @@ Log("[-] 开多失败", "#FF0000")
 ```
 
 ### Q: 持仓查询后 pos[0] 报 IndexError
-**原因**: 多次调用 `exchange.GetPosition()` 时，只更新了 `pos` 变量但没有同步更新 `hasPosition` 等关联变量。交易操作后 pos 可能变成空列表，但 `hasPosition` 仍是旧的 `True`，导致访问 `pos[0]` 越界。
+**原因**: 多次调用 `exchange.GetPositions()` 时，只更新了 `pos` 变量但没有同步更新 `hasPosition` 等关联变量。交易操作后 pos 可能变成空列表，但 `hasPosition` 仍是旧的 `True`，导致访问 `pos[0]` 越界。
 
 **解决**:
 - 交易操作前后必须重新查询持仓并同步更新所有关联变量
@@ -307,7 +307,7 @@ Log("[-] 开多失败", "#FF0000")
 
 ```python
 # ✅ 状态栏展示时独立查询
-currentPos = exchange.GetPosition()
+currentPos = exchange.GetPositions()
 currentHasPos = currentPos is not None and len(currentPos) > 0
 if currentHasPos:
     posType = "多头" if currentPos[0].Type == PD_LONG else "空头"

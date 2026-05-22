@@ -450,7 +450,7 @@ K线周期常量: `PERIOD_M1`, `PERIOD_M3`, `PERIOD_M5`, `PERIOD_M15`, `PERIOD_M
 
 | 函数 | 说明 |
 |------|------|
-| `exchange.GetPositions()` | 获取持仓 → `[{Type, Amount, Price, Margin, Profit}]` |
+| `exchange.GetPositions()` | 获取持仓 → `[{Type, Amount, Price, Margin, Profit}]`（`GetPosition` 是兼容别名，两者完全一致） |
 | `exchange.SetMarginLevel(level)` | 设置保证金杠杆 |
 | `exchange.SetDirection(dir)` | 设置方向 `PD_LONG` / `PD_SHORT` |
 | `exchange.SetContractType("BTC_USDT")` | **设置合约类型（必须第一步调用）** |
